@@ -50,7 +50,7 @@ async def async_capture_packets():
         result = await loop.run_in_executor(pool, capture_packets)
     return result
 
-@app.get("/captura")
-async def captura_trafico():
+@app.get("/v1/capture/")
+async def capture_traffic_network():
     pkts = await async_capture_packets()
     return pkts
