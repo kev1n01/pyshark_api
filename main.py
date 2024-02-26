@@ -58,7 +58,7 @@ def capture_packets():
     return pkts
 
 def capture_packets_deploy():
-    capture = ps.LiveCapture(interface='eth0')
+    capture = ps.LiveCapture(interface='eth0@if196170')
     capture.sniff(packet_count=100)
 
     pkts = []
@@ -85,12 +85,10 @@ async def async_capture_packets():
     return result
 
 async def async_capture_packets_deploy():
-    # loop = asyncio.get_event_loop()
-    # with ProcessPoolExecutor() as pool:
-    #     result = await loop.run_in_executor(pool, capture_packets_deploy)
-    net = subprocess.run("netstat")
-    # subprocess.run("ipconfig")
-    return net
+    loop = asyncio.get_event_loop()
+    with ProcessPoolExecutor() as pool:
+        result = await loop.run_in_executor(pool, capture_packets_deploy)
+    return result
 
 @app.get("/")
 async def capture_traffic_network_local():
@@ -99,13 +97,18 @@ async def capture_traffic_network_local():
 
 @app.get("/eth")
 async def capture_traffic_network_deploy():
-    try:
-        result_config = subprocess.run('lsb_release -d', capture_output=True, text=True, check=True, shell=True)
-        result_netstat = subprocess.run('ip a', capture_output=True, text=True, check=True, shell=True)
-        # result_netstat = subprocess.run('sudo apt install net-tools', capture_output=True, text=True, check=True, shell=True)
-        return {
-            'config': result_config,
-            'netstat': result_netstat,
-        }
-    except Exception as e:
-        raise e
+    # try:
+    #     result_config = subprocess.run('lsb_release -d', capture_output=True, text=True, check=True, shell=True)
+    #     result_netstat = subprocess.run('ip a', capture_output=True, text=True, check=True, shell=True)
+    #     result_netstat = subprocess.run('', capture_output=True, text=True, check=True, shell=True)
+    #     return {
+    #         'config': result_config,
+    #         'netstat': result_netstat,
+    #     }
+    # except Exception as e:
+    #     raise e
+    
+    pkts = await async_capture_packets_deploy()
+    return pkts
+    
+    
