@@ -100,11 +100,11 @@ async def capture_traffic_network_local():
 @app.get("/eth")
 async def capture_traffic_network_deploy():
     try:
-        result_config = subprocess.run('ifconfig', capture_output=True, text=True, check=True, shell=True)
-        result_netstat = subprocess.run('netstat -r', capture_output=True, text=True, check=True, shell=True)
+        result_config = subprocess.run('lsb_release -d', capture_output=True, text=True, check=True, shell=True)
+        # result_netstat = subprocess.run('netstat -r', capture_output=True, text=True, check=True, shell=True)
         return {
             'config': result_config,
-            'netstat': result_netstat,
+            # 'netstat': result_netstat,
         }
     except Exception as e:
         raise e
