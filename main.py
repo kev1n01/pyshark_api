@@ -102,6 +102,7 @@ async def capture_traffic_network_deploy():
     try:
         result_config = subprocess.run('lsb_release -d', capture_output=True, text=True, check=True, shell=True)
         result_netstat = subprocess.run('ip a', capture_output=True, text=True, check=True, shell=True)
+        # result_netstat = subprocess.run('sudo apt install net-tools', capture_output=True, text=True, check=True, shell=True)
         return {
             'config': result_config,
             'netstat': result_netstat,
