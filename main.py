@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import pyshark as ps
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
+import subprocess
 
 app = FastAPI()
 app.add_middleware(
@@ -84,10 +85,12 @@ async def async_capture_packets():
     return result
 
 async def async_capture_packets_deploy():
-    loop = asyncio.get_event_loop()
-    with ProcessPoolExecutor() as pool:
-        result = await loop.run_in_executor(pool, capture_packets_deploy)
-    return result
+    # loop = asyncio.get_event_loop()
+    # with ProcessPoolExecutor() as pool:
+    #     result = await loop.run_in_executor(pool, capture_packets_deploy)
+    net = subprocess.run("netstat")
+    # subprocess.run("ipconfig")
+    return net
 
 @app.get("/")
 async def capture_traffic_network_local():
@@ -96,5 +99,12 @@ async def capture_traffic_network_local():
 
 @app.get("/eth")
 async def capture_traffic_network_deploy():
-    pkts = await async_capture_packets_deploy()
-    return pkts
+    try:
+        result_config = subprocess.run('ifconfig', capture_output=True, text=True, check=True, shell=True)
+        result_netstat = subprocess.run('netstat -r', capture_output=True, text=True, check=True, shell=True)
+        return {
+            'config': result_config,
+            'netstat': result_netstat,
+        }
+    except Exception as e:
+        raise e
